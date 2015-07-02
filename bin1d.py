@@ -4,8 +4,7 @@
 # Laura L Watkins [lauralwatkins@gmail.com]
 # -----------------------------------------------------------------------------
 
-from numpy import *
-import numpy.core.records as rec
+import numpy as np
 from astropy import table
 import kinematics
 
@@ -57,15 +56,15 @@ def bin1d(x, v, dv, weights=None, limits=None, split=[], nbin=10, binby="pop",
     if not limits: limits = [x.min(), x.max()]
     
     # add bin limits to split to set subdivision boundaries
-    split = [min(limits)] + split + [max(limits)]
-    nsub = size(split) - 1
+    split = [np.min(limits)] + split + [np.max(limits)]
+    nsub = np.size(split) - 1
     
     # make sure that nbin and binby are lists
     if type(nbin) != list: nbin = [nbin]*nsub
     if type(binby) != list: binby = [binby]*nsub
     
     # total number of bins requested
-    ntot = sum(nbin)
+    ntot = np.sum(nbin)
     
     
     if not quiet:
@@ -80,11 +79,6 @@ def bin1d(x, v, dv, weights=None, limits=None, split=[], nbin=10, binby="pop",
     
     
     # set up array for bin properties
-    zz = [zeros(ntot)]*8
-    zz[0] = zz[0].astype(int)
-    zz[1] = zz[1].astype(int)
-    bins = rec.fromarrays(zz, names="id, n, {:}, d{:}, {:}, d{:}, {:}, d{:}".\
-        format(coord, coord, mean, mean, disp, disp))
     bins = table.Table(
         names=("id","n", coord, "d"+coord, mean, "d"+mean, disp, "d"+disp),
         dtype=(int, int, float, float, float, float, float, float))
@@ -94,20 +88,20 @@ def bin1d(x, v, dv, weights=None, limits=None, split=[], nbin=10, binby="pop",
     for j in range(nsub):
         
         # select stars in subdivision
-        if j == 0: sub = where( (x>=split[j]) & (x<=split[j+1]) )[0]
-        else: sub = where( (x>split[j]) & (x<=split[j+1]) )[0]
+        if j == 0: sub = np.where( (x>=split[j]) & (x<=split[j+1]) )[0]
+        else: sub = np.where( (x>split[j]) & (x<=split[j+1]) )[0]
         
         if not quiet:
             print "  subset ", j+1
             print "    bins:", nbin[j]
             print "    bin by:", binby[j]
-            print "    members:", size(sub)
+            print "    members:", np.size(sub)
         
         # sort by x and get population required for ~equal numbers
         if binby[j] == "pop":
-            pcs = linspace(0,100,nbin[j]+1)
+            pcs = np.linspace(0,100,nbin[j]+1)
             sortx = x[sub].argsort()
-            nsbin = size(sub) / nbin[j]
+            nsbin = np.size(sub) / nbin[j]
             if not quiet: print "    bin pop: ", nsbin
         
         # bin space for equal width bins
@@ -118,12 +112,12 @@ def bin1d(x, v, dv, weights=None, limits=None, split=[], nbin=10, binby="pop",
         
         for i in range(nbin[j]):
             
-            nfill = int(sum(nbin[:j]))
+            nfill = np.int(np.sum(nbin[:j]))
             
             # select stars in radial bin for equal population
             if binby[j] == "pop":
-                lo = percentile(x[sub], pcs[i])
-                hi = percentile(x[sub], pcs[i+1])
+                lo = np.percentile(x[sub], pcs[i])
+                hi = np.percentile(x[sub], pcs[i+1])
                 if i == 0: d = sub[x[sub]<hi]
                 if i == nbin[j]-1: d = sub[x[sub]>=lo]
                 else: d = sub[(x[sub]>=lo) & (x[sub]<hi)]
@@ -132,9 +126,9 @@ def bin1d(x, v, dv, weights=None, limits=None, split=[], nbin=10, binby="pop",
                 # select stars in radial bin for equal width
                 d = sub[(x[sub]>=split[j]+i*bs) & (x[sub]<split[j]+(i+1)*bs)]
             
-            if not quiet: print "    {:2}  {:4}  ".format(i+nfill,size(d)),
-            if size(d) > 0:
-                if any(weights): bins.add_row((i+nfill,) \
+            if not quiet: print "    {:2}  {:4}  ".format(i+nfill,np.size(d)),
+            if np.size(d) > 0:
+                if np.any(weights): bins.add_row((i+nfill,) \
                     + kinematics.bin_stats(x[d], v[d].reshape(v[d].size),
                     dv[d].reshape(v[d].size), w=weights[d].reshape(v[d].size),
                     nmc=nmc, quiet=quiet))

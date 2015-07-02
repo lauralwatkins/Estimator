@@ -4,8 +4,7 @@
 # Laura L Watkins [lauralwatkins@gmail.com]
 # -----------------------------------------------------------------------------
 
-import math
-from numpy import *
+import math, numpy as np
 from scipy.optimize import fmin
 from ll import ll
 
@@ -28,11 +27,11 @@ def maxlh(v, dv, w=None, p0=False, bias=True):
     """
     
     # intialise with mean and sigma of inputs unless given seeds
-    if not any(p0):
-        wmean = average(v, weights=w)
-        wstdv = sqrt(average((v-wmean)**2, weights=w))
-        dmean = average(dv, weights=w)
-        p0 = array([wmean, sqrt(wstdv**2 + dmean**2)])
+    if not np.any(p0):
+        wmean = np.average(v, weights=w)
+        wstdv = np.sqrt(np.average((v-wmean)**2, weights=w))
+        dmean = np.average(dv, weights=w)
+        p0 = np.array([wmean, np.sqrt(wstdv**2 + dmean**2)])
     
     # do the maximum likelihood fitting (find minimum of -logL)
     llpart = lambda pp : -ll(pp, v=v, dv=dv, w=w)
@@ -41,8 +40,8 @@ def maxlh(v, dv, w=None, p0=False, bias=True):
     # calculate bias in ML estimator and correct dispersion
     # (see appendix A1 of van de Ven et al. 2006 A&A 445 513)
     if bias:
-        b = exp(math.lgamma(v.size/2.) - math.lgamma((v.size-1)/2.)) \
-            * sqrt(2./v.size)
-        p[1] = sqrt(p[1]**2 + (1.-b**2) * dv.mean()**2)/b
+        b = np.exp(math.lgamma(v.size/2.) - math.lgamma((v.size-1)/2.)) \
+            * np.sqrt(2./v.size)
+        p[1] = np.sqrt(p[1]**2 + (1.-b**2) * dv.mean()**2)/b
     
     return p

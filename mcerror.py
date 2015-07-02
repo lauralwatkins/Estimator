@@ -4,7 +4,7 @@
 # Laura L Watkins [lauralwatkins@gmail.com]
 # -----------------------------------------------------------------------------
 
-from numpy import *
+import numpy as np
 from maxlh import maxlh
 
 
@@ -24,14 +24,15 @@ def mcerror(nmc, mean, sigma, errs, w=None, p0=None, lhbias=True):
       p0 : initial guesses for parameters (default: None)
     """
     
-    vm = zeros(nmc)
-    vs = zeros(nmc)
+    vm = np.zeros(nmc)
+    vs = np.zeros(nmc)
     
     # monte carlo errors
     for k in range(nmc):
         
         # draw velocities from gaussian, broadened with uncertainties
-        v = random.normal(mean, sigma, errs.size) + random.normal(scale=errs)
+        v = np.random.normal(mean, sigma, errs.size) \
+            + np.random.normal(scale=errs)
         
         # get mean and dispersion of monte-carlo velocities
         vm[k], vs[k] = maxlh(v, errs, w=w, p0=p0, bias=lhbias)
