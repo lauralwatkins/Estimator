@@ -8,46 +8,51 @@ import numpy as np
 from maxlh import maxlh
 
 
-def mcerror(nmc, mean, sigma, errs, w=None, p0=None, lhbias=True):
+def mcerror(num_samples, mean, sigma, errs, weights=None, guess=None, lhbias=True):
     
     """
     Calculates errors on estimates of a gaussian mean and standard deviation
     via a Monte Carlo method.
     
     INPUTS
-      nmc   : number of Monte Carlo samples to use to estimate errors
-      mean  : estimated mean
-      sigma : estimated dispersion
-      errs  : uncertainties on measurements
+        num_samples : number of Monte Carlo samples to generate
+        mean : estimated mean
+        dispersion : estimated dispersion
+        errors : uncertainties on measurements
     
     OPTIONS
-      p0 : initial guesses for parameters (default: None)
+        weights : weights on data points (default: None)
+        guess : initial guesses for parameters (default: None, will use mean
+                and dispersion of values)
+        bias : if set, perform bias correction (default: True)
     """
     
-    vm = np.zeros(nmc)
-    vs = np.zeros(nmc)
+    # create arrays for sample means and dispersion
+    sample_means = np.zeros(num_samples)
+    sample_disps = np.zeros(num_samples)
     
-    # monte carlo errors
-    for k in range(nmc):
+    # draw Monte Carlo samples and get maximum likelihood parameter estimates
+    for k in range(num_samples):
         
-        # draw velocities from gaussian, broadened with uncertainties
-        v = np.random.normal(mean, sigma, errs.size) \
-            + np.random.normal(scale=errs)
+        # draw sample from Gaussian, broadened with uncertainties
+        sample = np.random.normal(mean, dispersion, errors.size) \
+            + np.random.normal(scale=errors)
         
-        # get mean and dispersion of monte-carlo velocities
-        vm[k], vs[k] = maxlh(v, errs, w=w, p0=p0, bias=lhbias)
+        # get mean and dispersion of Monte Carlo samples
+        sample_means[k], sample_disps[k] = maxlh(sample, errors,
+            weights=weights, guess=guess, bias=lhbias)
     
-    # error on mean is dispersion of mc means
-    dm = vm.std(ddof=1)
+    # error on mean is dispersion of Monte Carlo'd sample means
+    error_mean = sample_means.std(ddof=1)
     
-    # error on dispersion is dispersion of mc dispersions
-    ds = vs.std(ddof=1)
+    # error on dispersion is dispersion of Monte Carlo'd sample dispersions
+    error_dispersion = sample_disps.std(ddof=1)
     
-    # ratio of average dispersion in mc drawings to input dispersion
-    bias = vs.mean() / sigma
+    # ratio of average dispersion in Monte Carlo samples to input dispersion
+    bias = sample_disps.mean()/dispersion
     
     # apply correction to dispersion and error to correct for bias
-    corrsigma = sigma / bias
-    ds /= bias
+    corrected_dispersion = dispersion / bias
+    error_dispersion /= bias
     
-    return dm, ds, corrsigma
+    return error_mean, error_dispersion, corrected_dispersion

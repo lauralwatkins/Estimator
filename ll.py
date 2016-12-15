@@ -8,37 +8,38 @@ import numpy as np
 from scipy.stats import norm
 
 
-def ll(p, v, dv, w=None):
+def ll((mean, dispersion), values, errors, weights=None):
     
     """
-    Calculates the total log-likelihood of an ensemble of velocities, with
+    Calculates the total log-likelihood of an ensemble of values, with
     uncertainties, given a model mean and dispersion.
     
     INPUTS
-      p  : model mean and dispersion
-      v  : velocities
-      dv : velocity uncertainties
+        mean : model mean
+        dispersion : model dispersion
+        values : data values
+        errors : data uncertainties
     
     OPTIONS
-      w  : weights [default: 1, ie unweighted]
+        weights : weights on each data point [default: None, ie unweighted]
     """
     
-    # require positive sigma
-    p[1] = np.abs(p[1])
+    # require positive dispersion
+    dispersion = np.abs(dispersion)
     
-    # likelihood of each star
-    ll = norm.logpdf(v, p[0], np.sqrt(p[1]**2+dv**2))
+    # log likelihood of each data point
+    loglike = norm.logpdf(values, mean, np.sqrt(dispersion**2+errors**2))
     
     # multiply by weights:
-    if np.any(w): ll *= w
+    if weights is not None: loglike *= weights
     
-    # fix zeros which will give logs of -inf
-    ll[ll==-np.inf] = ll[ll>-np.inf].min()
+    # remove -infinities
+    loglike[loglike==-np.inf] = loglike[loglike>-np.inf].min()
     
     # total likelihood
-    lltot = np.sum(ll)
+    loglike_total = np.sum(loglike)
     
     # renormalise by weights
-    if np.any(w): lltot *= np.size(ll) / np.sum(w)
+    if weights is not None: loglike_total *= np.size(loglike)/np.sum(weights)
     
-    return lltot
+    return loglike_total

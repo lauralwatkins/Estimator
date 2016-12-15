@@ -9,39 +9,41 @@ from scipy.optimize import fmin
 from ll import ll
 
 
-def maxlh(v, dv, w=None, p0=False, bias=True):
+def maxlh(values, errors, weights=None, guess=None, bias=True):
     
     """
     Finds the mean and dispersion that maximises the likelihood for a given
-    set of velocities and velocity uncertainties.  The routine also performs
-    a correction for the bias inherent in maximum likelihood estimators,
+    set of values and their uncertainties.  The routine also performs a
+    correction for the bias inherent in maximum likelihood estimators,
     following the description in van de Ven et al. 2006 (A&A 445 513).
     
     INPUTS
-      v  : stellar velocities
-      dv : stellar velocity uncertainties
+        values : data values
+        errors : data uncertainties
     
     OPTIONS
-      p0 : initial guesses for parameters (default: mean and dispersion of v)
-      bias : if set, perform bias correction (default: True)
+        weights : weights on data points (default: None)
+        guess : initial guesses for parameters (default: None, will use mean
+                and dispersion of values)
+        bias : if set, perform bias correction (default: True)
     """
     
     # intialise with mean and sigma of inputs unless given seeds
-    if not np.any(p0):
-        wmean = np.average(v, weights=w)
-        wstdv = np.sqrt(np.average((v-wmean)**2, weights=w))
-        dmean = np.average(dv, weights=w)
-        p0 = np.array([wmean, np.sqrt(wstdv**2 + dmean**2)])
+    if guess is None:
+        wmean = np.average(values, weights=weights)
+        wstdv = np.sqrt(np.average((values-wmean)**2, weights=weights))
+        dmean = np.average(errors, weights=weights)
+        guess = np.array([wmean, np.sqrt(wstdv**2 + dmean**2)])
     
     # do the maximum likelihood fitting (find minimum of -logL)
-    llpart = lambda pp : -ll(pp, v=v, dv=dv, w=w)
-    p = fmin(llpart, p0, disp=False)
+    def llpart(pp): return -ll(pp, values, errors, weights=weights)
+    mean, dispersion = fmin(llpart, guess, disp=False)
     
     # calculate bias in ML estimator and correct dispersion
     # (see appendix A1 of van de Ven et al. 2006 A&A 445 513)
     if bias:
-        b = np.exp(math.lgamma(v.size/2.) - math.lgamma((v.size-1)/2.)) \
-            * np.sqrt(2./v.size)
-        p[1] = np.sqrt(p[1]**2 + (1.-b**2) * dv.mean()**2)/b
+        b = np.exp(math.lgamma(values.size/2.)-math.lgamma((values.size-1)/2.))\
+            * np.sqrt(2./values.size)
+        dispersion = np.sqrt(dispersion**2 + (1.-b**2) * errors.mean()**2)/b
     
-    return p
+    return mean, dispersion
