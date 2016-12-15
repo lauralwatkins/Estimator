@@ -24,6 +24,15 @@ def ll((mean, dispersion), values, errors, weights=None):
         weights : weights on each data point [default: None, ie unweighted]
     """
     
+    # check for unit consistency
+    if getattr(mean, "unit", None) is not None \
+        and getattr(dispersion, "unit", None) is not None \
+        and getattr(values, "unit", None) is not None \
+        and getattr(errors, "unit", None) is not None:
+        mean = mean.to(values.unit)
+        dispersion = dispersion.to(values.unit)
+        errors = errors.to(values.unit)
+    
     # require positive dispersion
     dispersion = np.abs(dispersion)
     

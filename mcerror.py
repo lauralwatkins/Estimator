@@ -8,10 +8,11 @@ import numpy as np
 from maxlh import maxlh
 
 
-def mcerror(num_samples, mean, sigma, errs, weights=None, guess=None, lhbias=True):
+def mcerror(num_samples, mean, dispersion, errors, weights=None, guess=None,
+    lhbias=True):
     
     """
-    Calculates errors on estimates of a gaussian mean and standard deviation
+    Calculates errors on estimates of a Gaussian mean and standard deviation
     via a Monte Carlo method.
     
     INPUTS
@@ -27,16 +28,25 @@ def mcerror(num_samples, mean, sigma, errs, weights=None, guess=None, lhbias=Tru
         bias : if set, perform bias correction (default: True)
     """
     
+    # check for units and unit consistency
+    if getattr(mean, "unit", None) is not None \
+        and getattr(dispersion, "unit", None) is not None \
+        and getattr(errors, "unit", None) is not None:
+        dispersion = dispersion.to(mean.unit)
+        errors = errors.to(mean.unit)
+        unit = mean.unit
+    else: unit = 1
+    
     # create arrays for sample means and dispersion
-    sample_means = np.zeros(num_samples)
-    sample_disps = np.zeros(num_samples)
+    sample_means = np.zeros(num_samples)*unit
+    sample_disps = np.zeros(num_samples)*unit
     
     # draw Monte Carlo samples and get maximum likelihood parameter estimates
     for k in range(num_samples):
         
         # draw sample from Gaussian, broadened with uncertainties
-        sample = np.random.normal(mean, dispersion, errors.size) \
-            + np.random.normal(scale=errors)
+        sample = np.random.normal(mean, dispersion, errors.size)*unit \
+            + np.random.normal(scale=errors)*unit
         
         # get mean and dispersion of Monte Carlo samples
         sample_means[k], sample_disps[k] = maxlh(sample, errors,

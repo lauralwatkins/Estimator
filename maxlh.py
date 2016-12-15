@@ -28,16 +28,28 @@ def maxlh(values, errors, weights=None, guess=None, bias=True):
         bias : if set, perform bias correction (default: True)
     """
     
+    # check for units and unit consistency
+    if getattr(values, "unit", None) is not None \
+        and getattr(errors, "unit", None) is not None:
+        errors = errors.to(values.unit)
+        unit = values.unit
+    else: unit = 1
+    
+    # use equal weights (==1) if none are set
+    if weights is None: weights = np.ones(values.size)
+    
     # intialise with mean and sigma of inputs unless given seeds
     if guess is None:
-        wmean = np.average(values, weights=weights)
-        wstdv = np.sqrt(np.average((values-wmean)**2, weights=weights))
-        dmean = np.average(errors, weights=weights)
-        guess = np.array([wmean, np.sqrt(wstdv**2 + dmean**2)])
+        wmean = np.mean(values*weights)/np.mean(weights)
+        wstdv = np.sqrt(np.mean((values-wmean)**2*weights)/np.mean(weights))
+        dmean = np.mean(errors*weights)/np.mean(weights)
+        guess = (wmean/unit, np.sqrt(wstdv**2 + dmean**2)/unit)
+    else:
+        guess = [g/unit for g in guess]
     
     # do the maximum likelihood fitting (find minimum of -logL)
-    def llpart(pp): return -ll(pp, values, errors, weights=weights)
-    mean, dispersion = fmin(llpart, guess, disp=False)
+    def llpart(pp): return -ll(pp*unit, values, errors, weights=weights)
+    mean, dispersion = fmin(llpart, guess, disp=False)*unit
     
     # calculate bias in ML estimator and correct dispersion
     # (see appendix A1 of van de Ven et al. 2006 A&A 445 513)
