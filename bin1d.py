@@ -4,6 +4,7 @@
 # Laura L Watkins [lauralwatkins@gmail.com]
 # -----------------------------------------------------------------------------
 
+from __future__ import division, print_function
 import numpy as np
 from astropy import table
 import kinematics
@@ -68,11 +69,11 @@ def bin1d(x, v, dv, weights=None, limits=None, split=[], nbin=10, binby="pop",
     
     
     if not quiet:
-        print "\nmaximum likelihood fit\n"
-        print "  subdivisions:", nsub
-        print "  total bins:", ntot
-        print "  number of monte carlo errors:", nmc
-        print ""
+        print("\nmaximum likelihood fit\n")
+        print("  subdivisions:", nsub)
+        print("  total bins:", ntot)
+        print("  number of monte carlo errors:", nmc)
+        print("")
     
     
     # --------------------------------------
@@ -92,23 +93,23 @@ def bin1d(x, v, dv, weights=None, limits=None, split=[], nbin=10, binby="pop",
         else: sub = np.where( (x>split[j]) & (x<=split[j+1]) )[0]
         
         if not quiet:
-            print "  subset ", j+1
-            print "    bins:", nbin[j]
-            print "    bin by:", binby[j]
-            print "    members:", np.size(sub)
+            print("  subset ", j+1)
+            print("    bins:", nbin[j])
+            print("    bin by:", binby[j])
+            print("    members:", np.size(sub))
         
         # sort by x and get population required for ~equal numbers
         if binby[j] == "pop":
             pcs = np.linspace(0,100,nbin[j]+1)
             sortx = x[sub].argsort()
             nsbin = np.size(sub) / nbin[j]
-            if not quiet: print "    bin pop: ", nsbin
+            if not quiet: print("    bin pop: ", nsbin)
         
         # bin space for equal width bins
         if binby[j] == "space":
             if nbin[j] == 1: bs = split[j+1] - split[j]
             else: bs = (split[j+1] - split[j]) / nbin[j]
-            if not quiet: print "    bin space: ", bs
+            if not quiet: print("    bin space: ", bs)
         
         for i in range(nbin[j]):
             
@@ -126,7 +127,7 @@ def bin1d(x, v, dv, weights=None, limits=None, split=[], nbin=10, binby="pop",
                 # select stars in radial bin for equal width
                 d = sub[(x[sub]>=split[j]+i*bs) & (x[sub]<split[j]+(i+1)*bs)]
             
-            if not quiet: print "    {:2}  {:4}  ".format(i+nfill,np.size(d)),
+            if not quiet: print("    {:2}  {:4}  ".format(i+nfill,np.size(d)),)
             if np.size(d) > 0:
                 if np.any(weights): bins.add_row((i+nfill,) \
                     + kinematics.bin_stats(x[d], v[d].reshape(v[d].size),
@@ -137,7 +138,7 @@ def bin1d(x, v, dv, weights=None, limits=None, split=[], nbin=10, binby="pop",
                     v[d].reshape(v[d].size), dv[d].reshape(v[d].size),
                     nmc=nmc, quiet=quiet))
         
-        if not quiet: print ""
+        if not quiet: print("")
     
     
     # remove empty bins

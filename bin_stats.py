@@ -4,6 +4,7 @@
 # Laura L Watkins [lauralwatkins@gmail.com]
 # -----------------------------------------------------------------------------
 
+from __future__ import division, print_function
 import numpy as np
 import kinematics
 
@@ -41,8 +42,8 @@ def bin_stats(coords, values, errors, weights=None, nmc=0, quiet=False):
         weights=weights)
     else: error_mean, error_disp = 0., 0.
     
-    if not quiet: print "{:7.3f} {:7.3f}   {:7.3f} {:7.3f}   "\
+    if not quiet: print("{:7.3f} {:7.3f}   {:7.3f} {:7.3f}   "\
         "{:7.3f} {:7.3f}   ".format(mean_coords, disp_coords, mean_values,
-        error_means, disp_values, error_disp)
+        error_means, disp_values, error_disp))
     
     return num_points, mean_coords, disp_coords, mean_values, error_mean, disp_values, error_disp
