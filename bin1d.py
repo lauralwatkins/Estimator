@@ -130,7 +130,8 @@ def bin1d(x, v, dv, weights=None, limits=None, split=[], nbin=10, binby="pop",
             if np.size(d) > 0:
                 if np.any(weights): bins.add_row((i+nfill,) \
                     + kinematics.bin_stats(x[d], v[d].reshape(v[d].size),
-                    dv[d].reshape(v[d].size), w=weights[d].reshape(v[d].size),
+                    dv[d].reshape(v[d].size),
+                    weights=weights[d].reshape(v[d].size),
                     nmc=nmc, quiet=quiet))
                 else: bins.add_row((i+nfill,) + kinematics.bin_stats(x[d],
                     v[d].reshape(v[d].size), dv[d].reshape(v[d].size),
