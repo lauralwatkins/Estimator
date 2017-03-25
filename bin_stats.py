@@ -8,38 +8,41 @@ import numpy as np
 import kinematics
 
 
-def bin_stats(x, y, dy, w=None, nmc=0, quiet=False):
+def bin_stats(coords, values, errors, weights=None, nmc=0, quiet=False):
     
     """
     Estimate the properties of all stars in a single bin.
     
     INPUTS
-      x  : coordinate
-      y  : quantity
-      dy : quantity errors
+      coords : data coordinates
+      values : data values
+      errors : data uncertainties on values
     
     OPTIONS
-      w     : individual weights for measurements [default: None, will use 1]
-      nmc   : number of monte carlo errors to generate [default:0]
+      weights : individual weights for measurements [default: None, will use 1]
+      num_mcerrors : number of monte carlo errors to generate [default:0]
       quiet : supress read out [default:False]
     """
     
     
     # number of members in bin
-    b_n = x.size
+    num_points = coords.size
     
     # weighted mean coordinate
-    b_x = np.average(x, weights=w)
-    b_dx = np.sqrt(np.average((x-b_x)**2, weights=w))
+    mean_coords = np.average(coords, weights=weights)
+    disp_coords = np.sqrt(np.average((coords-mean_coords)**2, weights=weights))
     
     # mean velocities and dispersions
-    b_m, b_s = kinematics.maxlh(y, dy, w=w)
+    mean_values, disp_values = kinematics.maxlh(values, errors, weights=weights)
     
     # monte carlo errors
-    if nmc > 0: b_dm, b_ds, b_s = kinematics.mcerror(nmc, b_m, b_s, dy, w=w)
-    else: b_dm, b_ds = 0., 0.
+    if nmc>0: error_mean, error_disp, disp_values \
+        = kinematics.mcerror(nmc, mean_values, disp_values, errors,
+        weights=weights)
+    else: error_mean, error_disp = 0., 0.
     
     if not quiet: print "{:7.3f} {:7.3f}   {:7.3f} {:7.3f}   "\
-        "{:7.3f} {:7.3f}   ".format(b_x, b_dx, b_m, b_dm, b_s, b_ds)
+        "{:7.3f} {:7.3f}   ".format(mean_coords, disp_coords, mean_values,
+        error_means, disp_values, error_disp)
     
-    return b_n, b_x, b_dx, b_m, b_dm, b_s, b_ds
+    return num_points, mean_coords, disp_coords, mean_values, error_mean, disp_values, error_disp
