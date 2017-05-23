@@ -89,8 +89,8 @@ def bin1d(x, v, dv, weights=None, limits=None, split=[], nbin=10, binby="pop",
     for j in range(nsub):
         
         # select stars in subdivision
-        if j == 0: sub = np.where( (x>=split[j]) & (x<=split[j+1]) )[0]
-        else: sub = np.where( (x>split[j]) & (x<=split[j+1]) )[0]
+        if j == 0: sub = (x>=split[j]) & (x<=split[j+1])
+        else: sub = (x>split[j]) & (x<=split[j+1])
         
         if not quiet:
             print("  subset ", j+1)
