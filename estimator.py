@@ -6,8 +6,8 @@
 
 from __future__ import division, print_function
 import numpy as np
-from maxlh import maxlh
-from mcerror import mcerror
+from .maxlh import maxlh
+from .mcerror import mcerror
 
 
 def estimator(values, errors, num_mcerrors=1000, weights=None, guess=None,

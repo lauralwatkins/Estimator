@@ -6,7 +6,8 @@
 
 from __future__ import division, print_function
 import numpy as np
-import kinematics
+from .maxlh import maxlh
+from .mcerror import mcerror
 
 
 def bin_stats(coords, values, errors, weights=None, nmc=0, quiet=False):
@@ -34,11 +35,11 @@ def bin_stats(coords, values, errors, weights=None, nmc=0, quiet=False):
     disp_coords = np.sqrt(np.average((coords-mean_coords)**2, weights=weights))
     
     # mean velocities and dispersions
-    mean_values, disp_values = kinematics.maxlh(values, errors, weights=weights)
+    mean_values, disp_values = maxlh(values, errors, weights=weights)
     
     # monte carlo errors
     if nmc>0: error_mean, error_disp, disp_values \
-        = kinematics.mcerror(nmc, mean_values, disp_values, errors,
+        = mcerror(nmc, mean_values, disp_values, errors,
         weights=weights)
     else: error_mean, error_disp = 0., 0.
     

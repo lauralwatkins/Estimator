@@ -6,7 +6,7 @@
 
 from __future__ import division, print_function
 import numpy as np
-from maxlh import maxlh
+from .maxlh import maxlh
 
 
 def mcerror(num_samples, mean, dispersion, errors, weights=None, guess=None,

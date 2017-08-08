@@ -7,7 +7,7 @@
 from __future__ import division, print_function
 import math, numpy as np
 from scipy.optimize import fmin
-from ll import ll
+from .ll import ll
 
 
 def maxlh(values, errors, weights=None, guess=None, bias=True):

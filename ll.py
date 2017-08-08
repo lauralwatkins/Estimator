@@ -9,7 +9,7 @@ import numpy as np
 from scipy.stats import norm
 
 
-def ll((mean, dispersion), values, errors, weights=None):
+def ll(parameters, values, errors, weights=None):
     
     """
     Calculates the total log-likelihood of an ensemble of values, with
@@ -24,6 +24,8 @@ def ll((mean, dispersion), values, errors, weights=None):
     OPTIONS
         weights : weights on each data point [default: None, ie unweighted]
     """
+    
+    mean, dispersion = parameters
     
     # check for unit consistency
     if getattr(mean, "unit", None) is not None \

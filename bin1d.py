@@ -7,7 +7,7 @@
 from __future__ import division, print_function
 import numpy as np
 from astropy import table
-import kinematics
+from .bin_stats import bin_stats
 
 
 def bin1d(x, v, dv, weights=None, limits=None, split=[], nbin=10, binby="pop",
@@ -89,8 +89,8 @@ def bin1d(x, v, dv, weights=None, limits=None, split=[], nbin=10, binby="pop",
     for j in range(nsub):
         
         # select stars in subdivision
-        if j == 0: sub = (x>=split[j]) & (x<=split[j+1])
-        else: sub = (x>split[j]) & (x<=split[j+1])
+        if j == 0: sub = np.where( (x>=split[j]) & (x<=split[j+1]) )[0]
+        else: sub = np.where( (x>split[j]) & (x<=split[j+1]) )[0]
         
         if not quiet:
             print("  subset ", j+1)
@@ -130,11 +130,11 @@ def bin1d(x, v, dv, weights=None, limits=None, split=[], nbin=10, binby="pop",
             if not quiet: print("    {:2}  {:4}  ".format(i+nfill,np.size(d)),)
             if np.size(d) > 0:
                 if np.any(weights): bins.add_row((i+nfill,) \
-                    + kinematics.bin_stats(x[d], v[d].reshape(v[d].size),
+                    + bin_stats(x[d], v[d].reshape(v[d].size),
                     dv[d].reshape(v[d].size),
                     weights=weights[d].reshape(v[d].size),
                     nmc=nmc, quiet=quiet))
-                else: bins.add_row((i+nfill,) + kinematics.bin_stats(x[d],
+                else: bins.add_row((i+nfill,) + bin_stats(x[d],
                     v[d].reshape(v[d].size), dv[d].reshape(v[d].size),
                     nmc=nmc, quiet=quiet))
         
