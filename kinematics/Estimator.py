@@ -3,11 +3,10 @@
 from __future__ import division, print_function
 import numpy as np
 from .maxlh import maxlh
-from .mcerror import mcerror
+from .MonteCarloErrors import MonteCarloErrors
 
 
-def estimator(values, errors, num_mcerrors=1000, weights=None, guess=None,
-    bias=True):
+def Estimator(values, errors, num_mcerrors=1000, weights=None, guess=None, bias=True):
     
     """
     A maximum likelihood estimator that returns the Gaussian mean and
@@ -35,7 +34,7 @@ def estimator(values, errors, num_mcerrors=1000, weights=None, guess=None,
     if num_mcerrors<=0: return mean, dispersion
     
     # monte carlo to get errors and corrected dispersion
-    error_mean, error_dispersion, dispersion = mcerror(num_mcerrors, mean,
-        dispersion, errors, weights=weights, guess=guess, lhbias=bias)
+    error_mean, error_dispersion, dispersion = MonteCarloErrors(num_mcerrors,
+        mean, dispersion, errors, weights=weights, guess=guess, lhbias=bias)
     
     return mean, dispersion, error_mean, error_dispersion

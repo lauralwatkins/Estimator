@@ -5,8 +5,7 @@ import numpy as np
 from .maxlh import maxlh
 
 
-def mcerror(num_samples, mean, dispersion, errors, weights=None, guess=None,
-    lhbias=True):
+def MonteCarloErrors(num_samples, mean, dispersion, errors, weights=None, guess=None, lhbias=True):
     
     """
     Calculates errors on estimates of a Gaussian mean and standard deviation

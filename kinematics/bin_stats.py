@@ -3,7 +3,7 @@
 from __future__ import division, print_function
 import numpy as np
 from .maxlh import maxlh
-from .mcerror import mcerror
+from .MonteCarloErrors import MonteCarloErrors
 
 
 def bin_stats(coords, values, errors, weights=None, nmc=0, quiet=False):
@@ -35,7 +35,7 @@ def bin_stats(coords, values, errors, weights=None, nmc=0, quiet=False):
     
     # monte carlo errors
     if nmc>0: error_mean, error_disp, disp_values \
-        = mcerror(nmc, mean_values, disp_values, errors,
+        = MonteCarloErrors(nmc, mean_values, disp_values, errors,
         weights=weights)
     else: error_mean, error_disp = 0., 0.
     
