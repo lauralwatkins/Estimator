@@ -49,10 +49,10 @@ def MonteCarloErrors(num_samples, mean, dispersion, errors, weights=None, guess=
             weights=weights, guess=guess, bias=lhbias)
     
     # error on mean is dispersion of Monte Carlo'd sample means
-    error_mean = sample_means.std(ddof=1)
+    error_mean = sample_means.std(ddof=min(num_samples-1,1))
     
     # error on dispersion is dispersion of Monte Carlo'd sample dispersions
-    error_dispersion = sample_disps.std(ddof=1)
+    error_dispersion = sample_disps.std(ddof=min(num_samples-1,1))
     
     # ratio of average dispersion in Monte Carlo samples to input dispersion
     bias = sample_disps.mean()/dispersion
