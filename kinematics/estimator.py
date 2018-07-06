@@ -1,8 +1,4 @@
 #!/usr/bin/env python
-# -----------------------------------------------------------------------------
-# KINEMATICS.ESTIMATOR
-# Laura L Watkins [lauralwatkins@gmail.com]
-# -----------------------------------------------------------------------------
 
 from __future__ import division, print_function
 import numpy as np
@@ -24,7 +20,7 @@ def estimator(values, errors, num_mcerrors=1000, weights=None, guess=None,
         errors : data uncertainties
     
     OPTIONS
-        num_samples : number of Monte Carlo samples to generate
+        num_mcerrors : number of Monte Carlo samples to generate
         weights : weights on data points (default: None)
         guess : initial guesses for parameters (default: None, will use mean
                 and dispersion of values)

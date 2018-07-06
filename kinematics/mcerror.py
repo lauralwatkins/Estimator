@@ -1,8 +1,4 @@
 #!/usr/bin/env python
-# -----------------------------------------------------------------------------
-# KINEMATICS.MCERROR
-# Laura L Watkins [lauralwatkins@gmail.com]
-# -----------------------------------------------------------------------------
 
 from __future__ import division, print_function
 import numpy as np
