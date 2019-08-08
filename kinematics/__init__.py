@@ -9,3 +9,4 @@ from .Estimator import Estimator
 from .MonteCarloErrors import MonteCarloErrors
 
 from .Double import Double
+from .Gaussian import Gaussian
