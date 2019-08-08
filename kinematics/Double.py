@@ -4,7 +4,7 @@ import numpy as np
 from scipy import optimize, stats
 import math
 
-
+ 
 def lnLikelihoodDouble(parameters, values, errors, weights=None):
     
     """
@@ -136,7 +136,7 @@ def FitDouble(values, errors, weights=None, guess=None, bias=True):
     # calculate bias in ML estimator and correct dispersion
     # (see appendix A1 of van de Ven et al. 2006 A&A 445 513)
     if bias:
-        b = np.exp(math.lgamma(values.size/2.)-math.lgamma((values.size-1)/2))\
+        b = np.exp(math.lgamma(values.size/2)-math.lgamma((values.size-1)/2))\
             * np.sqrt(2/values.size)
         dispersion1 = np.sqrt(dispersion1**2 + (1-b**2) * errors.mean()**2)/b
         dispersion2 = np.sqrt(dispersion2**2 + (1-b**2) * errors.mean()**2)/b
@@ -240,13 +240,13 @@ def MonteCarloDouble(Nsamples, mean1, dispersion1, mean2, dispersion2, f, errors
     
     return error_mean1, error_dispersion1, error_mean2, error_dispersion2, error_f, corrected_dispersion1, corrected_dispersion2
 
-def EstimatorDouble(values, errors, Nsamples=100, weights=None, guess=None, bias=True):
+def Double(values, errors, Nsamples=100, weights=None, guess=None, bias=True):
     
     """
     A maximum likelihood estimator that returns the parameters for a Double
-    Gaussian that best describes a given data set. Errors on the best-fitting
-    parameters are calculated using Monte Carlo sampling, but this can be
-    turned off to speed up run time.
+    Gaussian that best describes a given data set. Uncertainties on the
+    best-fitting parameters are calculated using Monte Carlo sampling, but
+    this can be turned off to speed up run time.
     
     INPUTS
         values : data values

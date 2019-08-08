@@ -8,4 +8,4 @@ from .maxlh import maxlh
 from .Estimator import Estimator
 from .MonteCarloErrors import MonteCarloErrors
 
-from .Double import EstimatorDouble
+from .Double import Double
