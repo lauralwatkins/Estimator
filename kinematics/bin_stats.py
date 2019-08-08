@@ -3,7 +3,7 @@
 from __future__ import division, print_function
 import numpy as np
 from .maxlh import maxlh
-from .MonteCarloErrors import MonteCarloErrors
+from .Gaussian import FitGaussian, MonteCarloGaussian
 
 
 def bin_stats(coords, values, errors, weights=None, nmc=0, quiet=False):
@@ -31,11 +31,11 @@ def bin_stats(coords, values, errors, weights=None, nmc=0, quiet=False):
     disp_coords = np.sqrt(np.average((coords-mean_coords)**2, weights=weights))
     
     # mean velocities and dispersions
-    mean_values, disp_values = maxlh(values, errors, weights=weights)
+    mean_values, disp_values = FitGaussian(values, errors, weights=weights)
     
     # monte carlo errors
     if nmc>0: error_mean, error_disp, disp_values \
-        = MonteCarloErrors(nmc, mean_values, disp_values, errors,
+        = MonteCarloGaussian(nmc, mean_values, disp_values, errors,
         weights=weights)
     else: error_mean, error_disp = 0., 0.
     
