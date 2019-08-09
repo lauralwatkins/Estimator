@@ -3,14 +3,14 @@
 from setuptools import setup
 
 setup(
-    name="kinematics",
+    name="Estimator",
     version="0.0",
-    description="Maximum likelihood estimator for kinematics.",
+    description="Simple maximum likelihood estimators.",
     author="Laura L Watkins",
     author_email="lauralwatkins@gmail.com",
-    url="https://github.com/lauralwatkins/kinematics",
+    url="https://github.com/lauralwatkins/Estimator",
     package_dir = {
-        "kinematics": "kinematics",
+        "Estimator": "Estimator",
     },
-    packages=["kinematics"],
+    packages=["Estimator"],
 )

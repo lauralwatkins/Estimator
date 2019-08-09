@@ -1,5 +1,5 @@
-KINEMATICS
-=======
+ESTIMATOR
+=========
 
 > **AUTHORS**
 Laura L Watkins (STScI), <lauralwatkins@gmail.com>
