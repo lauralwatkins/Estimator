@@ -2,7 +2,7 @@ ESTIMATOR
 =========
 
 > **AUTHORS**
-Laura L Watkins (STScI), <lauralwatkins@gmail.com>
+Laura L Watkins (ESA Office, STScI), <lauralwatkins@gmail.com>
 
 
 -------------------------------------------------------------------------------
