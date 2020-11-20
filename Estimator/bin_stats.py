@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 
-from __future__ import division, print_function
 import numpy as np
 from .Gaussian import FitGaussian, MonteCarloGaussian
 
 
-def bin_stats(coords, values, errors, weights=None, nmc=0, quiet=False):
+def BinStats(coords, values, errors, weights=None, nmc=0, quiet=False):
     
     """
     Estimate the properties of all stars in a single bin.

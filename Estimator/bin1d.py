@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 
-from __future__ import division, print_function
 import numpy as np
 from astropy import table
-from .bin_stats import bin_stats
+from .BinStats import BinStats
 
 
-def bin1d(x, v, dv, weights=None, limits=None, split=[], nbin=10, binby="pop",
+def Bin1d(x, v, dv, weights=None, limits=None, split=[], nbin=10, binby="pop",
     nmc=0, coord="x", mean="v", disp="s", quiet=True):
     
     """
