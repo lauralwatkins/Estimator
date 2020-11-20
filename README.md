@@ -33,8 +33,8 @@ If you find this code useful for your research, please mention it in your acknow
 CODE DESCRIPTION
 ----------------
 
-* **bin1d**: Generate a 1-dimensional kinematic profile for a given data set.  The data can be sorted into bins of equal spacing or equal population, and can also be split such that different subsets use different binning schemes.
-* **bin_stats**: Estimate the properties of all stars in a single bin.
+* **Bin1d**: Generate a 1-dimensional kinematic profile for a given data set.  The data can be sorted into bins of equal spacing or equal population, and can also be split such that different subsets use different binning schemes.
+* **BinStats**: Estimate the properties of all stars in a single bin.
 * **Gaussian**: Fits a Gaussian to a given set of values (with uncertainties). Uncertainties on the parameters are calculated via Monte Carlo sampling.
 * **Double**: Fits a Double Gaussian to a given set of values (with uncertainties). Uncertainties on the parameters are calculated via Monte Carlo sampling.
 
