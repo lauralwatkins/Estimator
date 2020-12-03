@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-from .bin1d import bin1d
-from .bin_stats import bin_stats
+from .Bin1d import Bin1d
+from .BinStats import BinStats
 
 from .Double import Double
 from .Gaussian import Gaussian
