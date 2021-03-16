@@ -33,17 +33,17 @@ def Bin1d(x, v, dv, weights=None, limits=None, split=[], nbin=10, binby="pop",
     
     EXAMPLES
       1) Generate a profile with 10 equally-populated bins:
-      $ bins = bin1d(x, v, dv)
+      $ bins = Bin1d(x, v, dv)
       
       2) Generate a profile with 20 equally-spaced bins and change
       coordinate name to 'radius':
-      $ bins = bin1d(x, v, dv, nbin=20, binby="space", coord="radius")
+      $ bins = Bin1d(x, v, dv, nbin=20, binby="space", coord="radius")
       
       3) Generate a profile split into 3 subsets (with splits occuring at 40
       and 80 units); use 10 bins for each subset and generate 50 Monte-Carlo
       errors.  For x<40 and x>80, bins are equally populated; for 40<x<80,
       bins are equally spaced:
-      $ bins = bin1d(x, v, dv, split=[40,80], nbin=10, nmc=50,
+      $ bins = Bin1d(x, v, dv, split=[40,80], nbin=10, nmc=50,
                      binby=["pop","space","pop"])
     """
     
@@ -125,11 +125,11 @@ def Bin1d(x, v, dv, weights=None, limits=None, split=[], nbin=10, binby="pop",
             if not quiet: print("    {:2}  {:4}  ".format(i+nfill,np.size(d)),)
             if np.size(d) > 0:
                 if np.any(weights): bins.add_row((i+nfill,) \
-                    + bin_stats(x[d], v[d].reshape(v[d].size),
+                    + BinStats(x[d], v[d].reshape(v[d].size),
                     dv[d].reshape(v[d].size),
                     weights=weights[d].reshape(v[d].size),
                     nmc=nmc, quiet=quiet))
-                else: bins.add_row((i+nfill,) + bin_stats(x[d],
+                else: bins.add_row((i+nfill,) + BinStats(x[d],
                     v[d].reshape(v[d].size), dv[d].reshape(v[d].size),
                     nmc=nmc, quiet=quiet))
         
